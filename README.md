@@ -75,7 +75,7 @@ KEY Protocol is designed to be integrated by platforms that handle:
 * identity verification
 * insurance and compliance
 
-Templates and reference integrations live in separate repositories.
+[Templates and reference integrations here.](https://github.com/pablo-chacon/key-templates/tree/main)
 
 ---
 
