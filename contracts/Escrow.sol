@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
+
 interface IEscrow {
   function fund(uint256, address, uint256, address) external payable;
   function releaseWithFees(
@@ -59,6 +60,7 @@ contract VehicleSaleCore is Ownable2Step, ReentrancyGuard {
     State   state;
   }
 
+
   IEscrow public immutable escrow;
 
   address public immutable protocolTreasury;
@@ -74,6 +76,7 @@ contract VehicleSaleCore is Ownable2Step, ReentrancyGuard {
 
   mapping(uint256 => Sale) public sales;
 
+
   event OfferCreated(
     uint256 indexed saleId,
     address indexed seller,
@@ -87,6 +90,7 @@ contract VehicleSaleCore is Ownable2Step, ReentrancyGuard {
   event Finalized(uint256 indexed saleId, address indexed seller, address indexed buyer);
   event Cancelled(uint256 indexed saleId);
   event Refunded(uint256 indexed saleId, address indexed buyer);
+
 
   constructor(
     address escrow_,
@@ -102,20 +106,24 @@ contract VehicleSaleCore is Ownable2Step, ReentrancyGuard {
 
   receive() external payable {}
 
+
   function setMaxPlatformFeeBps(uint16 v) external onlyOwner {
     require(v < 10000, "bad-bps");
     maxPlatformFeeBps = v;
   }
+
 
   function setFinalizeExpiry(uint64 v) external onlyOwner {
     require(v > 0, "expiry=0");
     finalizeExpiry = v;
   }
 
+
   function setDisputeWindow(uint64 v) external onlyOwner {
     require(v > 0, "window=0");
     disputeWindow = v;
   }
+
 
   function _isApproved(address vehicleContract, uint256 vehicleId, address owner) internal view returns (bool) {
     IERC721 nft = IERC721(vehicleContract);
@@ -143,6 +151,7 @@ contract VehicleSaleCore is Ownable2Step, ReentrancyGuard {
 
     // Ensure seller owns the vehicle at time of offer creation.
     require(IERC721(vehicleContract).ownerOf(vehicleId) == msg.sender, "not-vehicle-owner");
+
 
     sales[saleId] = Sale({
       vehicleContract: vehicleContract,

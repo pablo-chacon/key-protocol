@@ -3,7 +3,7 @@
 
 # KEY Protocol
 
-**Decentralized Vehicle Ownership, Rental, and Sale Settlement**
+**Decentralized Vehicle Ownership and Sale Settlement**
 
 ---
 
@@ -39,15 +39,14 @@ All future innovation is expected to happen **off-chain or on top of the protoco
 
 ---
 
-## **KEY Protocol: Neutral Vehicle Ownership & Usage Settlement (Ethereum-Mainnet)**
+## **KEY Protocol: Neutral Vehicle Ownership & Sale Settlement (Ethereum-Mainnet)**
 
 **KEY Protocol** is a minimal, self-contained, production-ready settlement layer for:
 
 * vehicle ownership anchoring
-* peer-to-peer vehicle rental and sharing
 * peer-to-peer vehicle sale and purchase
 
-Ownership intent, rental agreements, and sale settlement are expressed on-chain.
+Ownership intent and sale settlement are expressed on-chain.
 Legal ownership transfer, identity verification, and registry interaction are performed **off-chain by platforms**.
 
 **This repository contains only the immutable smart contracts and deployment script.**
@@ -59,7 +58,6 @@ Legal ownership transfer, identity verification, and registry interaction are pe
 Official KEY Protocol contract addresses:
 
 * **VehicleRegistry:** *TBD*
-* **CarShareCore:** *TBD*
 * **VehicleSaleCore:** *TBD*
 * **Escrow:** *TBD*
 * **protocolTreasury:** *TBD*
@@ -86,7 +84,6 @@ KEY Protocol is designed to be integrated by platforms that handle:
 ├── contracts
 │   ├── Escrow.sol
 │   ├── VehicleRegistry.sol
-│   ├── CarShareCore.sol
 │   └── VehicleSaleCore.sol
 ├── foundry.toml
 ├── README.md
@@ -102,7 +99,6 @@ KEY Protocol is designed to be integrated by platforms that handle:
 | -------------------- | ------------------------- | ------------------------ |
 | Vehicle identity     | Platform database         | ERC-721 identity anchor  |
 | Ownership change     | Manual + opaque           | On-chain intent + escrow |
-| Rental settlement    | Platform custody          | Trustless escrow         |
 | Sale settlement      | Dealer-controlled         | Atomic NFT + escrow      |
 | Fees                 | Mutable, opaque           | Immutable protocol fee   |
 | Registry integration | Closed                    | Platform-defined         |
@@ -151,22 +147,7 @@ The registry is an integrity anchor, not a legal registry.
 
 ---
 
-### **2. CarShareCore: rental & sharing settlement**
-
-* Owner-only rental offers
-* Escrowed rental price + deposit
-* Deterministic lifecycle:
-
-  * Offered → Booked → PickedUp → Returned → Finalized
-* Automatic settlement after dispute window
-* Immutable protocol fee (default 0.5%)
-* Optional platform fee
-
-No enforcement, no GPS, no arbitration logic.
-
----
-
-### **3. VehicleSaleCore: sale & purchase settlement**
+### **2. VehicleSaleCore: sale & purchase settlement**
 
 * Owner-only sale offers
 * Buyer-funded escrow
@@ -184,20 +165,11 @@ Legal ownership transfer happens off-chain through platforms.
 * Holds ETH or ERC-20 funds
 * Releases funds based on core contract state
 * Applies protocol and platform fees at payout
-* Shared by all KEY cores
+* Shared by VehicleRegistry and VehicleSaleCore
 
 ---
 
 ## **Finalization and Disputes**
-
-### **Rental Finalization**
-
-* After return + dispute window:
-
-  * Rental price released to lender (minus fees)
-  * Deposit refunded to renter
-* Anyone may call `finalize`
-* No subjective judgment on-chain
 
 ### **Sale Finalization**
 
@@ -298,4 +270,3 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 **[Contact Email](pablo-chacon-ai@proton.me)**
 
 ---
-

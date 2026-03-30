@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
  *         Stores funds per id, then releases with fee splits or refunds.
  *
  * CHANGE:
- * - Supports multiple authorized cores (CarShareCore, VehicleSaleCore, etc).
+ * - Supports multiple authorized cores (VehicleSaleCore, etc).
  */
 contract Escrow is Ownable2Step {
   using SafeERC20 for IERC20;

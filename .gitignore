@@ -1,0 +1,4 @@
+/.env
+/lib
+/.gitmodules
+/foundry.lock

@@ -2,11 +2,10 @@
 pragma solidity ^0.8.24;
 
 import "forge-std/Script.sol";
+import "../contracts/Escrow.sol";
+import "../contracts/VehicleRegistry.sol";
+import "../contracts/VehicleSaleCore.sol";
 
-import "contracts/Escrow.sol";
-import "contracts/VehicleRegistry.sol";
-import "contracts/CarShareCore.sol";
-import "contracts/VehicleSaleCore.sol";
 
 contract DeployProtocol is Script {
   function run() external {
@@ -19,11 +18,9 @@ contract DeployProtocol is Script {
 
     Escrow escrow = new Escrow();
     VehicleRegistry registry = new VehicleRegistry("KEY Vehicle Registry", "KEYVEH");
-    CarShareCore rentCore = new CarShareCore(address(escrow), protocolTreasury, protocolBps);
     VehicleSaleCore saleCore = new VehicleSaleCore(address(escrow), protocolTreasury, protocolBps);
 
-    // wire cores to escrow
-    escrow.setCore(address(rentCore), true);
+    // wire core to escrow
     escrow.setCore(address(saleCore), true);
 
     vm.stopBroadcast();

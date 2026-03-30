@@ -1,15 +1,14 @@
-
 ---
 
 # KEY Protocol Whitepaper
 
-## A Neutral, Immutable Settlement Layer for Vehicle Ownership, Rental, and Sale
+## A Neutral, Immutable Settlement Layer for Vehicle Ownership and Sale
 
 ---
 
 ## Abstract
 
-KEY Protocol is a minimal blockchain protocol that defines **on-chain settlement of vehicle ownership intent, rental usage, and sale transactions**, while intentionally leaving **all legal enforcement, identity verification, and registry interaction off-chain**.
+KEY Protocol is a minimal blockchain protocol that defines **on-chain settlement of vehicle ownership intent and sale transactions**, while intentionally leaving **all legal enforcement, identity verification, and registry interaction off-chain**.
 
 KEY does not operate a vehicle marketplace, rental service, dealership, or registry.
 It provides **neutral, deterministic settlement primitives** that external platforms may use to coordinate real-world vehicle ownership and usage.
@@ -79,7 +78,6 @@ All sensitive data remains off-chain.
 KEY includes only what is strictly necessary to:
 
 * anchor vehicle identity
-* settle rental agreements
 * settle sale transactions
 * transfer value deterministically
 
@@ -108,12 +106,11 @@ Any system requiring these must implement them **outside the protocol**.
 
 ## Core Architecture
 
-KEY Protocol consists of four immutable contracts:
+KEY Protocol consists of three immutable contracts:
 
 ```
 VehicleRegistry
       |
-      |-- CarShareCore
       |-- VehicleSaleCore
       |
     Escrow
@@ -147,38 +144,6 @@ The registry:
 Permissionless minting is allowed by design.
 
 The registry is an **integrity anchor**, not a legal authority.
-
----
-
-## Rental and Sharing Settlement
-
-### CarShareCore
-
-CarShareCore defines a **deterministic rental state machine**:
-
-```
-Offered → Booked → PickedUp → Returned → Finalized
-```
-
-Key properties:
-
-* Only the current vehicle NFT owner may create rental offers
-* The renter funds escrow with:
-
-  * rental price
-  * optional deposit
-* Funds are held by Escrow until finalization
-* Settlement is automatic after a dispute window
-* Deposits are refunded on successful completion
-
-The protocol does not verify:
-
-* pickup location
-* vehicle condition
-* driver behavior
-* return location
-
-These are platform concerns.
 
 ---
 
@@ -241,7 +206,6 @@ KEY intentionally avoids arbitration.
 
 Disputes are handled as follows:
 
-* Rental disputes freeze settlement temporarily
 * Sale disputes result in refund
 * No subjective decision is made on-chain
 * No oracle or judge is involved
@@ -287,7 +251,6 @@ Once deployed, the protocol is intended to operate **without its author**.
 KEY is designed to be used by:
 
 * vehicle marketplaces
-* rental platforms
 * dealerships
 * fleet operators
 * DAO-based ownership systems
@@ -299,7 +262,7 @@ All integration logic lives **outside the protocol**.
 
 ## Conclusion
 
-KEY Protocol is a **neutral settlement substrate** for vehicle ownership and usage.
+KEY Protocol is a **neutral settlement substrate** for vehicle ownership and sale.
 
 It does not attempt to replace law, registries, or platforms.
 It provides a cryptographic layer that those systems may optionally adopt.
@@ -317,4 +280,3 @@ MIT License
 Copyright (c) 2025 Pablo-Chacon
 
 ---
-
