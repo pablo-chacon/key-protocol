@@ -1,4 +1,4 @@
-/.env
-/lib
-/.gitmodules
-/foundry.lock
+.env
+lib
+.gitmodules
+foundry.lock
