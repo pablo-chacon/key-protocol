@@ -8,25 +8,19 @@
 
 ## Abstract
 
-KEY Protocol is a minimal blockchain protocol that defines **on-chain settlement of vehicle ownership intent and sale transactions**, while intentionally leaving **all legal enforcement, identity verification, and registry interaction off-chain**.
+KEY Protocol is a minimal blockchain protocol that defines on-chain settlement of vehicle ownership intent and sale transactions, while intentionally leaving all legal enforcement, identity verification, and registry interaction off-chain.
 
-KEY does not operate a vehicle marketplace, rental service, dealership, or registry.
-It provides **neutral, deterministic settlement primitives** that external platforms may use to coordinate real-world vehicle ownership and usage.
+KEY does not operate a vehicle marketplace, rental service, dealership, or registry. It provides neutral, deterministic settlement primitives that external platforms may use to coordinate real-world vehicle ownership and usage.
 
-The protocol is designed to be **finished infrastructure**: immutable, non-governed, and capable of operating indefinitely without updates, maintainers, or institutional control.
+The protocol is designed to be finished infrastructure: immutable, non-governed, and capable of operating indefinitely without updates, maintainers, or institutional control.
 
 ---
 
 ## Design Principles
 
-KEY Protocol is designed around the following principles:
-
 ### 1. Finality
 
-The protocol is **complete and immutable**.
-There are no upgrade paths, governance hooks, or future versions.
-
-All behavior is defined entirely by the deployed code.
+The protocol is complete and immutable. There are no upgrade paths, governance hooks, or future versions. All behavior is defined entirely by the deployed code.
 
 ---
 
@@ -40,19 +34,19 @@ KEY does not encode:
 * enforcement mechanisms
 * insurance models
 * trust assumptions
+* platform fee logic
 
-All such concerns are **explicitly externalized to platforms**.
+All such concerns are explicitly externalized to platforms.
 
 ---
 
 ### 3. One-Way Legal Integration
 
-KEY expresses **intent and settlement on-chain**.
+KEY expresses intent and settlement on-chain.
 
-Legal ownership transfer and registry updates occur **off-chain**, initiated by platforms using the on-chain intent as input.
+Legal ownership transfer and registry updates occur off-chain, initiated by platforms using the on-chain intent as input.
 
-No on-chain state can force a legal registry update.
-No legal registry can mutate on-chain state directly.
+No on-chain state can force a legal registry update. No legal registry can mutate on-chain state directly.
 
 This asymmetry is intentional.
 
@@ -60,7 +54,7 @@ This asymmetry is intentional.
 
 ### 4. Privacy by Construction
 
-KEY stores **no personally identifiable information**.
+KEY stores no personally identifiable information.
 
 On-chain data is limited to:
 
@@ -87,7 +81,7 @@ Anything else is excluded by design.
 
 ## What KEY Is Not
 
-KEY Protocol explicitly does **not** provide:
+KEY Protocol explicitly does not provide:
 
 * a vehicle registry
 * legal title enforcement
@@ -99,8 +93,9 @@ KEY Protocol explicitly does **not** provide:
 * location tracking
 * pricing algorithms
 * matching or discovery
+* platform fee infrastructure
 
-Any system requiring these must implement them **outside the protocol**.
+Any system requiring these must implement them outside the protocol.
 
 ---
 
@@ -124,13 +119,13 @@ Each contract has a single, narrow responsibility.
 
 ### VehicleRegistry
 
-Vehicles are represented as **ERC-721 tokens**.
+Vehicles are represented as ERC-721 tokens.
 
 Each token anchors:
 
-* a unique `vehicleId`
-* an immutable `vinHash`
-* an immutable `specHash`
+* a unique vehicleId
+* an immutable vinHash
+* an immutable specHash
 
 These hashes commit to constant vehicle properties without revealing plaintext data.
 
@@ -143,7 +138,7 @@ The registry:
 
 Permissionless minting is allowed by design.
 
-The registry is an **integrity anchor**, not a legal authority.
+The registry is an integrity anchor, not a legal authority.
 
 ---
 
@@ -151,20 +146,25 @@ The registry is an **integrity anchor**, not a legal authority.
 
 ### VehicleSaleCore
 
-VehicleSaleCore defines a **peer-to-peer sale settlement flow**:
+VehicleSaleCore defines a peer-to-peer sale settlement flow:
 
 1. Seller creates a sale offer (must own the vehicle NFT)
 2. Buyer funds escrow
 3. Seller transfers NFT to buyer
-4. Escrow releases funds atomically
+4. Escrow releases funds atomically minus protocol fee
 
-Buyer protection is provided via:
+**Buyer protection:**
 
-* time-based refund if seller does not finalize
-* neutral dispute freeze resulting in refund
+* Fixed 5-day finalization window — if seller does not finalize within 5 days of funding, the buyer or anyone may trigger a full refund
+* Fixed 5-day dispute window — either party may raise a dispute within 5 days of funding, resulting in a full refund to buyer
 
-The protocol does not determine legal ownership.
-It settles **payment and token transfer only**.
+Both windows are protocol constants. They are immutable and cannot be adjusted by any party after deployment.
+
+**Dispute resolution:**
+
+Disputes result in refund. No arbitration occurs on-chain. No subjective decision is made. The neutral freeze resolves deterministically to the buyer.
+
+The protocol does not determine legal ownership. It settles payment and token transfer only.
 
 ---
 
@@ -176,27 +176,30 @@ Escrow is a shared, minimal settlement primitive:
 
 * Holds ETH or ERC-20 tokens
 * Releases funds based on core contract instructions
-* Applies protocol and platform fees at payout
+* Applies protocol fee only at payout — 0.3% to protocolTreasury
 * Supports refunds deterministically
+* No platform fee logic at the protocol layer
 
-Escrow is trusted **only** by authorized core contracts.
+Platform fee handling is not a protocol concern. Platforms handle their own fee logic upstream before interacting with the protocol.
+
+Escrow is trusted only by authorized core contracts.
 
 ---
 
 ## Fee Model
 
-KEY Protocol enforces:
+KEY Protocol enforces a single immutable protocol fee of 0.3% (30 bps).
 
-* an **immutable protocol fee** (e.g. 0.5%)
-* an optional, bounded platform fee
-
-Fees are:
+The fee is:
 
 * deducted at settlement
 * visible on-chain
 * non-modifiable post-deployment
+* the only fee at the protocol layer
 
-The protocol fee exists to support audits, tooling, and ecosystem longevity without extracting control.
+Platform fees are a platform concern. They are not encoded in, visible to, or modifiable by the protocol.
+
+The 0.3% protocol fee is set at this level deliberately. Vehicle transactions can be large. An extractive protocol fee on a large transaction is a design failure. 0.3% covers protocol sustainability without becoming a rent-seeking layer.
 
 ---
 
@@ -204,11 +207,11 @@ The protocol fee exists to support audits, tooling, and ecosystem longevity with
 
 KEY intentionally avoids arbitration.
 
-Disputes are handled as follows:
-
-* Sale disputes result in refund
+* Disputes result in full refund to buyer
 * No subjective decision is made on-chain
 * No oracle or judge is involved
+* Both the dispute window and finalization expiry are fixed at 5 days
+* These constants cannot be modified by any party
 
 Platforms may implement arbitration off-chain if desired.
 
@@ -222,27 +225,25 @@ KEY Protocol security relies on:
 * no external oracles
 * no upgradeability
 * no dynamic configuration
+* no owner-adjustable parameters after deployment
 * deterministic state transitions
 
-Ownership of contracts should be:
-
-* a multisig
-* a Safe
-* or fully renounced
+Ownership of contracts should be a multisig, a Safe, or fully renounced.
 
 ---
 
 ## Longevity and Governance
 
-KEY Protocol has **no governance**.
+KEY Protocol has no governance.
 
 There are:
 
 * no voting mechanisms
 * no emergency switches
 * no admin intervention paths
+* no adjustable parameters
 
-Once deployed, the protocol is intended to operate **without its author**.
+Once deployed, the protocol operates without its author.
 
 ---
 
@@ -256,16 +257,15 @@ KEY is designed to be used by:
 * DAO-based ownership systems
 * jurisdiction-specific registry integrators
 
-All integration logic lives **outside the protocol**.
+All integration logic lives outside the protocol.
 
 ---
 
 ## Conclusion
 
-KEY Protocol is a **neutral settlement substrate** for vehicle ownership and sale.
+KEY Protocol is a neutral settlement substrate for vehicle ownership and sale.
 
-It does not attempt to replace law, registries, or platforms.
-It provides a cryptographic layer that those systems may optionally adopt.
+It does not attempt to replace law, registries, or platforms. It provides a cryptographic layer that those systems may optionally adopt.
 
 Its strength lies in what it refuses to do.
 

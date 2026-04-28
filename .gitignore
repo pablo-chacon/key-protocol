@@ -1,4 +1,6 @@
 .env
-lib
+/lib
 .gitmodules
 foundry.lock
+/cache
+/out
