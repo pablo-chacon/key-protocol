@@ -1,5 +1,3 @@
----
-
 # KEY Protocol
 
 **Decentralized Vehicle Ownership and Sale Settlement**
