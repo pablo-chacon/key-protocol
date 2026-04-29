@@ -12,7 +12,7 @@ contract DeployProtocol is Script {
     uint256 deployerKey = vm.envUint("DEPLOYER_KEY");
 
     address protocolTreasury = vm.envAddress("PROTOCOL_TREASURY");
-    uint16  protocolBps      = uint16(vm.envUint("PROTOCOL_FEE_BPS")); // for example 50 (0.5%)
+    uint16  protocolBps      = uint16(vm.envUint("PROTOCOL_FEE_BPS")); // for example 30 (0.3%)
 
     vm.startBroadcast(deployerKey);
 
