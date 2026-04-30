@@ -9,10 +9,10 @@ import "../contracts/VehicleSaleCore.sol";
 
 contract DeployProtocol is Script {
   function run() external {
-    uint256 deployerKey = vm.envUint("DEPLOYER_KEY");
+    uint256 deployerKey = vm.envUint("PRIVATE_KEY");
 
     address protocolTreasury = vm.envAddress("PROTOCOL_TREASURY");
-    uint16  protocolBps      = uint16(vm.envUint("PROTOCOL_FEE_BPS")); // for example 30 (0.3%)
+    uint16  protocolBps      = uint16(vm.envUint("PROTOCOL_BPS")); // for example 30 (0.3%)
 
     vm.startBroadcast(deployerKey);
 

@@ -51,10 +51,10 @@ Ownership intent and sale settlement are expressed on-chain. Legal ownership tra
 
 Official KEY Protocol contract addresses:
 
-* **VehicleRegistry:** *TBD*
-* **VehicleSaleCore:** *TBD*
-* **Escrow:** *TBD*
-* **protocolTreasury:** *TBD*
+* **VehicleRegistry:** 0x23d273d83934ED9d32951d10947Cf4a2Fa1dD241
+* **VehicleSaleCore:** 0x912FC775dFc9024bDFDeAd20222Bfd285AbB3554
+* **Escrow:** 0x1c9d7c53aB7F3fD1aA02ceF173906980A875aA48
+* **protocolTreasury:** 0x86076aBcB9492359fd78432242A3534Fd114552B
 
 ---
 
