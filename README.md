@@ -239,14 +239,6 @@ KEY does not replace registries, platforms, or law. It provides a cryptographic 
 
 ---
 
-## License
-
-MIT License
-
-Copyright (c) 2025 Pablo-Chacon
-
----
-
 ## Contact
 
 pablo-chacon-ai@proton.me
